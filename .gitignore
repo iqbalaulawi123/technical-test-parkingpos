@@ -20,6 +20,7 @@ Frontend/frontend/.cache/
 Frontend/frontend/.eslintcache
 Frontend/package-lock.json
 Frontend/package.json
+Frontend/frontend/node/
 
 ParkingPOS/target/
 ParkingPOS/.classpath
