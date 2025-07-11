@@ -60,7 +60,8 @@ export default function Checkout() {
 
             if (response.ok) {
                 const responseData = await response.json();
-                if (responseData.status === 200 && responseData.data && responseData.data.length > 0) {
+
+                if (responseData.status === 200) {
                     const data = responseData.data[0];
                     setScan(true);
                     setVehicleNum(data.vehicleNum || '--');
@@ -74,15 +75,19 @@ export default function Checkout() {
                     console.log('Scan successful:', data);
                 } else {
                     setScan(false);
-                    console.error('Scan failed ', responseData.message);
+                    console.error('Scan failed', responseData.message);
+                    alert(`Scan failed: ${responseData.message}`);
                 }
             } else {
+                const errorData = await response.json();
                 setScan(false);
-                console.error('Scan failed:', response.statusText);
+                console.error('Scan failed:', errorData.message);
+                alert(`Scan failed: ${errorData.message}`);
             }
         } catch (error) {
             setScan(false);
             console.error('Error scan:', error);
+            alert('scan failed: ', error)
         }
     };
 
@@ -356,7 +361,7 @@ export default function Checkout() {
                                 Payment Method
                             </label>
                             <div className='grid w-full'>
-                                
+
                                 <select
                                     id="payment-type"
                                     name="payment-type"

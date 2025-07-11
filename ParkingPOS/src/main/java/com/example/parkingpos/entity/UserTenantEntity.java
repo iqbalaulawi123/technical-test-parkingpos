@@ -1,6 +1,7 @@
 package com.example.parkingpos.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
@@ -21,7 +22,7 @@ public class UserTenantEntity {
 
     @Column(name = "username")
     private String username;
-
+    @JsonIgnore
     @Column(name = "password")
     private String password;
 

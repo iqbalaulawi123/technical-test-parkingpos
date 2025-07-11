@@ -24,6 +24,20 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 .build();
         return new ResponseEntity<>(globalResponse, HttpStatus.NOT_FOUND);
     }
+
+    @ExceptionHandler(TicketAlreadyPaidException.class)
+    public ResponseEntity<GlobalResponseDTO> handleTicketAlreadyPaidException(
+            TicketAlreadyPaidException ex, WebRequest request) {
+
+        GlobalResponseDTO globalResponse = GlobalResponseDTO.builder()
+                .timestamp(LocalDateTime.now())
+                .message(ex.getMessage())
+                .status(HttpStatus.BAD_REQUEST.value())
+                .data(null)
+                .build();
+        return new ResponseEntity<>(globalResponse, HttpStatus.NOT_FOUND);
+    }
+
     @ExceptionHandler(UnathorizedLoginException.class)
     public ResponseEntity<GlobalResponseDTO> handleUnathorizedLoginException(
             UnathorizedLoginException ex, WebRequest request) {

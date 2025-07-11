@@ -11,31 +11,30 @@ export const AuthProvider = ({ children }) => {
         setLoading(true);
         setError(null);
         try {
-            // Simulate API call
-            const response = await new Promise(resolve => setTimeout(() => {
-                if (username === 'user' && password === 'password') {
-                    resolve({
-                        success: true, 
-                        user: { 
-                            username: 'user', 
-                            tenant_id: 'T00001',
-                            tenant_name: 'GRAND INDONESIA'
-                        }
-                    });
-                } else {
-                    resolve({ success: false, message: 'Invalid credentials' });
-                }
-            }, 1000));
+            const response = await fetch('http://localhost:8080/api/v1/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ username, password }),
+            });
 
-            if (response.success) {
-                setUser(response.user);
+            const data = await response.json();
+
+            if (response.ok && data.status === 200 && data.data && data.data.length > 0) {
+                const userData = data.data[0];
+                setUser({
+                    username: userData.username,
+                    tenant_id: userData.tenant.tenantId,
+                    tenant_name: userData.tenant.name,
+                });
                 return true;
             } else {
-                setError(response.message);
+                setError(data.message);
                 return false;
             }
         } catch (err) {
-            setError('An unexpected error occurred.');
+            setError('Something wrong');
             return false;
         } finally {
             setLoading(false);

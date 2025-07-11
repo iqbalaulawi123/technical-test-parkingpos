@@ -3,6 +3,7 @@ package com.example.parkingpos.service.Implementation;
 import com.example.parkingpos.dto.*;
 import com.example.parkingpos.entity.*;
 import com.example.parkingpos.exception.MultipleTicketCheckinException;
+import com.example.parkingpos.exception.TicketAlreadyPaidException;
 import com.example.parkingpos.repository.*;
 import com.example.parkingpos.service.TicketService;
 import jakarta.persistence.EntityNotFoundException;
@@ -128,6 +129,10 @@ public class TicketServiceImpl implements TicketService {
         TicketEntity ticketRow = ticketRepository.findById(UUID.fromString(request.getTicketNum()))
                 .orElseThrow(() -> new EntityNotFoundException("Ticket Not Found"));
 
+        //check tiket sudah dibayar
+        if(ticketRow.getTransaction().getIsPaid().equals(true)){
+            throw new TicketAlreadyPaidException();
+        }
 
         Long finalDurationInSecond = Helper.calculateSecondFromInOutRange(ticketRow.getInDate(),ticketRow.getOutDateScan());
         BigDecimal finalPrice = Helper.calculatePriceByRateAndSeconds(ticketRow.getTransaction().getRate(), finalDurationInSecond);
@@ -157,6 +162,11 @@ public class TicketServiceImpl implements TicketService {
     public ResponseEntity<GlobalResponseDTO> scanTicket(ScanTicketRequestDTO request) {
         TicketEntity ticketDetail = ticketRepository.findById(UUID.fromString(request.getTicketNum()))
                 .orElseThrow(() -> new EntityNotFoundException("ticket not found"));
+
+        //check tiket sudah dibayar
+        if(ticketDetail.getTransaction().getIsPaid().equals(true)){
+            throw new TicketAlreadyPaidException();
+        }
 
         LocalDateTime nowDate = LocalDateTime.now();
 
